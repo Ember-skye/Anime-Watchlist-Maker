@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Anime Watchlist Maker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@300;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="brand" href="#discovery">Anime Watchlist Maker</a>
+      <nav class="tabs" aria-label="Primary navigation">
+        <a class="tab active" href="#discovery" data-page-link="discoveryPage">Discovery</a>
+        <a class="tab" href="#my-list" data-page-link="myListPage">My List</a>
+      </nav>
+      <div class="top-actions">
+        <button id="importBtn" class="ghost-btn" type="button">Import</button>
+        <button id="exportBtn" class="ghost-btn" type="button">Export</button>
+        <input id="importFile" type="file" accept="application/json" hidden />
+      </div>
+    </div>
+  </header>
+
+  <main class="app">
+    <section class="page active" id="discoveryPage">
+      <div id="discovery"></div>
+      <section class="hero" aria-labelledby="heroTitle">
+        <h1 id="heroTitle">Decode your next <span>digital</span> odyssey.</h1>
+        <div class="search-shell">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input id="query" class="search-area" type="text" placeholder="Search anime by title, studio, or tags..." />
+          <button id="searchBtn" class="search-btn" type="button">Search</button>
+        </div>
+      </section>
+
+      <section class="spotlight card" aria-label="Anime result">
+        <div class="poster-panel">
+          <img id="coverImg" class="cover skeleton-box" alt="" />
+          <div class="poster-actions">
+            <button id="openAniBtn" class="link-btn" type="button">AniList</button>
+          </div>
+        </div>
+
+        <div class="spotlight-info">
+          <div class="badge-row">
+            <span class="capsule blue skeleton-line short" id="seasonChip"></span>
+            <span class="capsule pink skeleton-line" id="titleChip"></span>
+          </div>
+          <p id="subtitles" class="native-title skeleton-line medium"></p>
+
+          <div class="metric-row">
+            <div id="scoreChip" class="metric skeleton-line tiny"></div>
+            <div id="episodesChip" class="metric skeleton-line tiny"></div>
+            <div id="durationChip" class="metric skeleton-line tiny"></div>
+          </div>
+
+          <div class="description-wrap">
+            <h2>Description</h2>
+            <div id="desc" class="description skeleton-copy"></div>
+            <div class="tags" id="genresTags"></div>
+          </div>
+
+          <div class="entry-panel">
+            <label>
+              <span>Status</span>
+              <select id="personalStatus">
+                <option value="WATCHING">Watching</option>
+                <option value="COMPLETED">Completed</option>
+                <option value="PLANNING">Planning</option>
+                <option value="DROPPED">Dropped</option>
+              </select>
+            </label>
+            <label>
+              <span>Progress</span>
+              <input id="watchedEpisodes" type="number" min="0" value="0" />
+            </label>
+            <label>
+              <span>Your Score</span>
+              <input id="personalScore" type="number" min="0" max="10" value="5" />
+            </label>
+            <button id="savePersonal" class="update-btn" type="button">Update Entry</button>
+          </div>
+
+          <details class="notes-drawer">
+            <summary>Notes and links</summary>
+            <textarea id="personalNotes" placeholder="Your thoughts on the anime..."></textarea>
+            <div class="detail-actions">
+              <button id="clearPersonal" class="ghost-btn" type="button">Clear Fields</button>
+              <div id="externalLinks" class="muted"></div>
+            </div>
+            <div id="trailer" class="trailer muted">Trailer or banner appears after search.</div>
+          </details>
+          <div class="sync" id="statusLine">Search AniList to load an anime.</div>
+        </div>
+      </section>
+
+      <section class="section-head discovery-suggestions">
+        <h2><span aria-hidden="true">+</span> Suggested for You</h2>
+        <button id="getRecommendationsBtn" class="text-btn" type="button">Refresh</button>
+      </section>
+      <div class="recommendations-list" id="recommendationsList">
+        <div class="recommendation-skeleton"></div>
+        <div class="recommendation-skeleton"></div>
+        <div class="recommendation-skeleton"></div>
+        <div class="recommendation-skeleton"></div>
+      </div>
+
+      <section class="quote-bar">
+        <div class="quote-content" id="quoteContent">
+          <p class="quote-text">Whatever happens, happens.</p>
+          <p class="quote-author">Spike Spiegel</p>
+        </div>
+        <button id="newQuoteBtn" class="text-btn" type="button">Refresh Quote</button>
+      </section>
+    </section>
+
+    <section class="page" id="myListPage">
+      <div id="my-list"></div>
+      <section class="list-hero">
+        <h1>My List</h1>
+        <p>Track progress, filter your library, and reopen saved anime.</p>
+      </section>
+
+      <section class="card filters-card list-controls-bar">
+        <input id="filterInput" type="text" placeholder="Search anime by name..." />
+        <select id="statusFilter">
+          <option value="all">All statuses</option>
+          <option value="COMPLETED">Completed</option>
+          <option value="WATCHING">Watching</option>
+          <option value="PLANNING">Planning</option>
+          <option value="DROPPED">Dropped</option>
+        </select>
+        <select id="sortSelect">
+          <option value="title">Sort by Title</option>
+          <option value="score">Sort by My Score</option>
+          <option value="added">Sort by Added Date</option>
+        </select>
+      </section>
+
+      <section class="dashboard" id="watchlistSection">
+        <div class="main-column">
+          <section class="section-head">
+            <h2><span aria-hidden="true">▷</span> Continue Watching</h2>
+          </section>
+          <div class="continue-grid" id="continueWatchlist"></div>
+
+          <section class="section-head">
+            <h2><span aria-hidden="true">#</span> All Anime</h2>
+          </section>
+          <div class="library-grid" id="watchlist"></div>
+        </div>
+
+        <aside class="side-column">
+          <section class="card stats-card">
+            <h2>Stats Widget</h2>
+            <div id="statsContent" class="stats-grid"></div>
+          </section>
+
+          <section class="card favorites-card">
+            <h2>Top Favorites</h2>
+            <div class="favorites-list" id="favoritesList"></div>
+          </section>
+        </aside>
+      </section>
+    </section>
+
+    <div class="hidden-hooks" aria-hidden="true">
+      <img id="waifuImg" src="" alt="" />
+      <span id="waifuName"></span>
+      <button id="newWaifuBtn" type="button">New Waifu</button>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div>
+      <strong>Anime Watchlist Maker</strong>
+      <span>Data provided by AniList</span>
+    </div>
+    <nav aria-label="Footer navigation">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">API</a>
+      <a href="#">Support</a>
+    </nav>
+    <span>© 2026 Digital Collective</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
