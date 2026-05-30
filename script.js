@@ -580,30 +580,6 @@ if (newQuoteBtn) {
 
 fetchQuote();
 
-// ---------- Random Waifu ----------
-const waifuImg = $('waifuImg');
-const waifuName = $('waifuName');
-const newWaifuBtn = $('newWaifuBtn');
-
-async function fetchWaifu() {
-  if (!waifuImg || !waifuName) return;
-  waifuImg.src = '';
-  waifuName.textContent = 'Loading...';
-  try {
-    const res = await fetch('https://api.waifu.pics/sfw/waifu');
-    const data = await res.json();
-    waifuImg.src = data.url;
-    waifuName.textContent = '✨ Your random waifu appeared! ✨';
-  } catch (e) {
-    waifuImg.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 300"><rect fill="%23121a2e" width="200" height="300"/><text fill="%23ff6b9d" x="50%" y="50%" text-anchor="middle" font-size="20">No waifu found</text></svg>';
-    waifuName.textContent = 'Try again!';
-  }
-}
-
-if (newWaifuBtn) {
-  newWaifuBtn.addEventListener('click', fetchWaifu);
-}
-
 // ---------- Recommendations ----------
 const getRecommendationsBtn = $('getRecommendationsBtn');
 const recommendationsList = $('recommendationsList');
